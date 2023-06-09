@@ -1,25 +1,58 @@
-import React from 'react';
-import logo from './logo.svg';
+import { useObservable } from 'micro-observables';
+import { useEffect } from 'react';
+import {
+  createBrowserRouter,
+  Navigate,
+  Outlet,
+  RouterProvider,
+} from 'react-router-dom';
+
+import themeStore from '@/stores/theme';
+import { setThemeCssVars } from '@/utils/theme';
+
 import './App.css';
+import { NavRouteObject, ROUTES } from './constants/routes';
+import SideBar from './SideBar';
+
+const ROUTER = createBrowserRouter([
+  {
+    children: [
+      {
+        element: <Navigate replace to="/overview" />,
+        path: '/',
+      },
+      ...Object.values<NavRouteObject>(ROUTES),
+    ],
+    element: <Layout />,
+    errorElement: <div>Error!</div>,
+    loader: () => {
+      return <div>Loading</div>;
+    },
+    path: '/',
+  },
+]);
 
 function App() {
+  const theme = useObservable(themeStore.theme);
+
+  useEffect(() => {
+    setThemeCssVars(theme);
+    return themeStore.theme.subscribe((theme) => setThemeCssVars(theme));
+  }, []);
+
+  return <RouterProvider router={ROUTER} />;
+}
+
+function Layout() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <aside>
+        <SideBar />
+      </aside>
+      <main>
+        <Outlet />
+      </main>
+    </>
   );
 }
 
