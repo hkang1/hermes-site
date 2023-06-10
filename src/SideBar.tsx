@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 import Icon from '@/components/Icon';
 import { NAVIGATION, NavItem, NavRouteObject, NavSection } from '@/constants/routes';
@@ -32,8 +32,8 @@ function Section(section: NavSection) {
   return (
     <section className={classes.join(' ')} key={section.label}>
       <div className={css.title} onClick={handleToggle}>
+        <Icon name={isOpen ? 'arrow-down' : 'arrow-right'} />
         <span>{section.label}</span>
-        <Icon name={isOpen ? 'arrow-down' : 'arrow-left'} />
       </div>
       <div className={css.body}>
         {section.children.map((child) => Item(child))}
@@ -43,5 +43,13 @@ function Section(section: NavSection) {
 }
 
 function Route(item: NavRouteObject) {
-  return item.path ? (<Link key={item.path} to={item.path}>{item.label}</Link>) : null;
+  const location = useLocation();
+  const classes = [ css.link ];
+
+  console.log(item.path, location.pathname)
+  if (item.path === location.pathname) classes.push(css.current);
+
+  return item.path ? (
+    <Link className={classes.join(' ')} key={item.path} to={item.path}>{item.label}</Link>
+  ) : null;
 }

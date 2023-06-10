@@ -6,7 +6,8 @@
 }
 
 aside {
-  width: 230px;
+  background-color: var(--theme-stage-weak);
+  width: 260px;
   overflow: auto;
 }
 
