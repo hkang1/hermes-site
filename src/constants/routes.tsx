@@ -6,11 +6,13 @@ import GettingStarted from '@/pages/GettingStarted';
 import Overview from '@/pages/Overview';
 
 export type NavRouteObject = RouteObject & {
+  hidden?: boolean;
   label: string;
 }
 
 export type NavSection = {
   children: (NavRouteObject | NavSection)[];
+  hidden?: boolean;
   label: string;
   type: 'section';
 }
